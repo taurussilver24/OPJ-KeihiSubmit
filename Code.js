@@ -1,52 +1,80 @@
 
 function onFormSubmit(e) {
   console.log(e.values);
-  console.log(e.values[2]);
+  let personName = searchconemail(e.values[3])
+  let month = "2023年12月"
+  let lineID = rturnLineID(e.values[3])
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var emailsheet = spreadsheet.getSheetByName('emails');
+  if (!emailsheet) {
+      throw new Error('Sheet "emails" does not exist.');
+    }
+    // Get the email address from the form submission
+  var submittedEmail = e.values[3]; // assuming this is the email field
+  // Determine the range to read based on the number of rows with data
+  var lastRow = emailsheet.getLastRow();
+  var range1 = emailsheet.getRange(1, 1, lastRow, 1);
+  var data = range1.getValues();
+  // Find the email in the sheet and delete it if found
+  for (var i = 0; i < data.length; i++) {
+    if (data[i][0] === submittedEmail) {
+      emailsheet.deleteRow(i + 1); // Rows are 1-indexed in Google Sheets
+      break; // Stop the loop after finding the email
+    }
+  }
+    // Find and remove the matching email
+
 
   // Split the string of URLs into an array, using ', ' as the delimiter
-  var driveLinks = e.values[2].split(', ');
+  var driveLinks = e.values[1].split(', ');
 
-  moveFilesToDesignatedFolder(driveLinks);
+  moveFilesToDesignatedFolder(driveLinks,personName,month);
+  testDoPost(lineID,personName,month)
+  
 }
 
-function moveFilesToDesignatedFolder(driveLinks) {
-  // Access the DriveApp service
+function moveFilesToDesignatedFolder(driveLinks, personName, month) {
   var drive = DriveApp;
-  var FOLDER_ID = "1oBiiGEsvCHbeTKPu_-WtKGKvQ0dS4xJx"; // Folder ID
-  
-  // Generate a unique name for the new folder by appending a timestamp
-  var folderName = "TESTTEJFHS_" + new Date().toISOString();
-  var folder = drive.getFolderById(FOLDER_ID);
-  
-  // Create a new folder inside the parent folder
-  var newFolder = folder.createFolder(folderName);
+  var FOLDER_ID = "1DutEKNUX_Unmi3GPvYxYPGFoMG57SKs4"; // Folder ID
+
+  var folderName = personName;
+  var parentFolder = drive.getFolderById(FOLDER_ID);
+  var folders = parentFolder.getFoldersByName(folderName);
+  var folder;
+
+  // Check if the folder already exists
+  if (folders.hasNext()) {
+    // Use the existing folder
+    folder = folders.next();
+  } else {
+    // Create a new folder
+    folder = parentFolder.createFolder(folderName);
+  }
 
   // Iterate through the Drive links
   for (var i = 0; i < driveLinks.length; i++) {
     try {
-      var driveLink = driveLinks[i].trim(); // Trimming extra whitespace
-      var match = driveLink.match(/id=([^&]+)/); // Adapted regex
-      
-      // Check for invalid Drive link format and log a warning if necessary
+      var driveLink = driveLinks[i].trim();
+      var match = driveLink.match(/id=([^&]+)/);
+
       if (!match) {
         console.log("Invalid Drive link format at index " + i + ": " + driveLink);
-        continue;  // Skip to the next iteration
+        continue;
       }
 
       var fileId = match[1];
       var file = drive.getFileById(fileId);
-      
-      console.log(fileId);
-      
-      // Simplifying the file moving logic
-      newFolder.createFile(file.getBlob());
+
+      // Move the file to the designated folder
+      folder.createFile(file.getBlob());
       file.setTrashed(true);
-      
+
     } catch (e) {
       console.log("Error processing file at index " + i + ": " + e.toString());
     }
   }
 }
+
 
 
 

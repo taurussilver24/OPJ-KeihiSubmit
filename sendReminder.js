@@ -4,6 +4,8 @@ function sendReminder(){
   
   let emails = readEmailsFromSheet();
   
+  
+  
   for (let i = 0; i < emails.length; i++) {
     try {
       let name =  searchconemail(emails[i]);

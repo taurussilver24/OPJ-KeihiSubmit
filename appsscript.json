@@ -1,21 +1,30 @@
 {
   "timeZone": "Asia/Tokyo",
   "dependencies": {
-    "enabledAdvancedServices": [{
-      "userSymbol": "People",
-      "serviceId": "peopleapi",
-      "version": "v1"
-    }, {
-      "userSymbol": "Sheets",
-      "serviceId": "sheets",
-      "version": "v4"
-    }],
-    "libraries": [{
-      "userSymbol": "LINEWORKS",
-      "libraryId": "1aLcCr3CWqfenPMyM0_FWIDUgRcTxsit9bO6BTx61NCXrCtkY2zbHBlod",
-      "version": "68"
-    }]
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "People",
+        "serviceId": "peopleapi",
+        "version": "v1"
+      },
+      {
+        "userSymbol": "Sheets",
+        "serviceId": "sheets",
+        "version": "v4"
+      }
+    ],
+    "libraries": [
+      {
+        "userSymbol": "LINEWORKS",
+        "libraryId": "1aLcCr3CWqfenPMyM0_FWIDUgRcTxsit9bO6BTx61NCXrCtkY2zbHBlod",
+        "version": "68"
+      }
+    ]
   },
   "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8"
+  "runtimeVersion": "V8",
+  "webapp": {
+    "executeAs": "USER_DEPLOYING",
+    "access": "ANYONE_ANONYMOUS"
+  }
 }
