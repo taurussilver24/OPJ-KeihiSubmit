@@ -6,6 +6,7 @@ function onFormSubmit(e) {
   let lineID = rturnLineID(e.values[3])
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var emailsheet = spreadsheet.getSheetByName('emails');
+  var kanrisheet = spreadsheet.getSheetByName('経費管理')
   if (!emailsheet) {
       throw new Error('Sheet "emails" does not exist.');
     }
@@ -29,6 +30,8 @@ function onFormSubmit(e) {
   var driveLinks = e.values[1].split(', ');
 
   moveFilesToDesignatedFolder(driveLinks,personName,month);
+  insertValueIntoCell(e.values[2],month,personName,kanrisheet)
+  
   testDoPost(lineID,personName,month)
   
 }
